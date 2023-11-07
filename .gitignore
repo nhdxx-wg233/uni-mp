@@ -11,6 +11,7 @@ node_modules
 dist
 .DS_Store
 *.local
+.idea
 
 # 忽略自动生成的声明文件
 src/types/auto-import.d.ts
