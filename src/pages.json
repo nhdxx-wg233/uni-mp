@@ -13,8 +13,8 @@
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "首页",
-        "navigationStyle": "custom",
-        "navigationBarTextStyle": "white"
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
 			}
 		},
 		{
@@ -41,6 +41,12 @@
 			"path": "pages/login/login",
 			"style": {
 				"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/hot/hot",
+			"style": {
+				"navigationBarTitleText": "热门推荐"
 			}
 		}
 	],
@@ -84,34 +90,36 @@
 		]
 	},
 	// 分包加载规则
-  "subPackages": [
-    // 子包根目录
-    {
-      "root": "pagesMember",
-      "pages": [
-        {
-          "path": "settings/settings",
-          "style": {
-            "navigationBarTitleText": "设置"
-          }
-        },
-        {
-          "path": "profile/profile",
-          "style": {
-            "navigationStyle": "custom",
-            "navigationBarTextStyle": "white",
-            "navigationBarTitleText": "个人信息"
-          }
-        }
-      ],
+	"subPackages": [
+		// 子包根目录
+		{
+			"root": "pagesMember",
+			"pages": [
+				{
+					"path": "settings/settings",
+					"style": {
+						"navigationBarTitleText": "设置"
+					}
+				},
+				{
+					"path": "profile/profile",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "white",
+						"navigationBarTitleText": "个人信息"
+					}
+				}
+			]
+		}
 
-    }
-  ],
-  // 分包预下载规则
-  "preloadRule": {
-    "pages/my/my": {
-      "network": "all",
-      "packages": ["pagesMember"]
-    }
-  }
+	],
+	// 分包预下载规则
+	"preloadRule": {
+		"pages/my/my": {
+			"network": "all",
+			"packages": [
+				"pagesMember"
+			]
+		}
+	}
 }
