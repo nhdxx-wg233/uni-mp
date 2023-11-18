@@ -18,7 +18,7 @@ const onDeleteAddress = async (id: number) => {
     content: '删除地址?',
     success: async (res) => {
       if (res.confirm) {
-        const res = await deleteMemberAddressByIdAPI(id)
+        await deleteMemberAddressByIdAPI(id)
         getMemberAddressData()
       }
     }
