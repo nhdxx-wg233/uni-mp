@@ -1,7 +1,6 @@
 <template>
-  <!-- <PageSkeleton v-if="isLoading"> -->
-  <view class="viewport"
-    ><!-- 自定义导航栏 -->
+  <view class="viewport">
+    <!-- 自定义导航栏 -->
     <CustomNavbar></CustomNavbar>
     <!-- 滚动容器 -->
     <scroll-view
@@ -12,16 +11,18 @@
       class="scroll-view"
       scroll-y
     >
-      <Swiper :list="bannerList"></Swiper>
-      <!-- 商品分类 -->
-      <CategoryPanel :list="categoryList" />
-      <!-- 热门推荐 -->
-      <HotPannel :list="hotList" />
-      <!-- 猜你喜欢 -->
-      <Guess />
+      <PageSkeleton v-if="isLoading" />
+      <template v-else>
+        <Swiper :list="bannerList"></Swiper>
+        <!-- 商品分类 -->
+        <CategoryPanel :list="categoryList" />
+        <!-- 热门推荐 -->
+        <HotPannel :list="hotList" />
+        <!-- 猜你喜欢 -->
+        <Guess />
+      </template>
     </scroll-view>
   </view>
-  <!-- </PageSkeleton> -->
 </template>
 <script lang="ts" setup>
 import Swiper from '@/components/Swiper/Swiper.vue'
@@ -50,10 +51,6 @@ const getHomeHotData = async () => {
   const res = await getHomeHotAPI()
   hotList.value = res.result
 }
-
-onLoad(async () => {
-  await Promise.all([getHomeBannerData(), getHomeCategoryData(), getHomeHotData()])
-})
 
 // 是否加载中标记
 const isLoading = ref(false)
