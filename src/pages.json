@@ -48,6 +48,12 @@
 			"style": {
 				"navigationBarTitleText": "热门推荐"
 			}
+		},
+		{
+			"path": "pages/goods/goods",
+			"style": {
+				"navigationBarTitleText": "商品"
+			}
 		}
 	],
 	"globalStyle": {
@@ -111,7 +117,6 @@
 				}
 			]
 		}
-
 	],
 	// 分包预下载规则
 	"preloadRule": {
