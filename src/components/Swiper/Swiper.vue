@@ -18,7 +18,7 @@ defineProps<{
     <!-- 指示点 -->
     <view class="indicator">
       <text
-        v-for="(item, index) in 3"
+        v-for="(item, index) in list"
         :key="item"
         class="dot"
         :class="{ active: index === activeIndex }"
