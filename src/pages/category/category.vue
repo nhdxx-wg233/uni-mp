@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Swiper from '@/components/Swiper/Swiper.vue'
+import PageSkeleton from '@/pages/category/components/PageSkeleton.vue'
 // 获取轮播图数据
 const bannerList = ref<BannerItem[]>([])
 const getBannerData = async () => {
@@ -30,6 +31,7 @@ onLoad(async () => {
 
 <template>
   <view class="viewport">
+    <PageSkeleton v-if="!isFinish" />
     <!-- 搜索框 -->
     <view class="search">
       <view class="input">
