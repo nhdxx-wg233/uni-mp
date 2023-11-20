@@ -1,5 +1,5 @@
 <template>
-  <CartMain />
+  <CartMain safe-area-inset-bottom />
 </template>
 <script setup>
 import CartMain from './components/CartMain.vue'
