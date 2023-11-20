@@ -4,7 +4,6 @@ const query = defineProps<{
   type: string
   title: string
 }>()
-console.log('query', query)
 // 动态设置标题
 uni.setNavigationBarTitle({ title: query.title })
 
