@@ -19,7 +19,7 @@
         <!-- 热门推荐 -->
         <HotPannel :list="hotList" />
         <!-- 猜你喜欢 -->
-        <Guess />
+        <Guess ref="guessRef" />
       </template>
     </scroll-view>
   </view>
