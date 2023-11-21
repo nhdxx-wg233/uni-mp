@@ -30,7 +30,7 @@ const activeIndex = ref(orderTabs.value.findIndex((item) => item.orderState === 
     <swiper class="swiper" ::current="activeIndex" @change="activeIndex = $event.detial.current">
       <!-- 滑动项 -->
       <swiper-item v-for="item in orderTabs" :key="item">
-        <OrderList :order-ststs="item.orderState"></OrderList>
+        <OrderList :order-state="item.orderState"></OrderList>
       </swiper-item>
     </swiper>
   </view>
