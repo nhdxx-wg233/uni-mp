@@ -1,5 +1,6 @@
 <template>
-  <view class="viewport">
+  <PageSkeleton v-if="isLoading" />
+  <view class="viewport" v-else>
     <!-- 自定义导航栏 -->
     <CustomNavbar></CustomNavbar>
     <!-- 滚动容器 -->
@@ -11,8 +12,7 @@
       class="scroll-view"
       scroll-y
     >
-      <PageSkeleton v-if="isLoading" />
-      <template v-else>
+      <template>
         <Swiper :list="bannerList"></Swiper>
         <!-- 商品分类 -->
         <CategoryPanel :list="categoryList" />
