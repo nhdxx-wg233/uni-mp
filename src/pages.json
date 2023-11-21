@@ -26,6 +26,12 @@
 			}
 		},
 		{
+			"path": "pages/cart/cart2",
+			"style": {
+				"navigationBarTitleText": "购物车"
+			}
+		},
+    {
 			"path": "pages/cart/cart",
 			"style": {
 				"navigationBarTitleText": "购物车"
@@ -114,7 +120,8 @@
 						"navigationBarTextStyle": "white",
 						"navigationBarTitleText": "个人信息"
 					}
-				},{
+				},
+				{
 					"path": "address/address",
 					"style": {
 						"navigationBarTitleText": "地址管理"
