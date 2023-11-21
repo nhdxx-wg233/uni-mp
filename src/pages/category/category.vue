@@ -21,17 +21,18 @@ const subCategoryList = computed(() => {
 const activeIndex = ref(0)
 
 // 是否数据加载完毕
-const isFinish = ref(false)
+const isLoading = ref(false)
 // 页面加载
 onLoad(async () => {
+  isLoading.value = true
   await Promise.all([getBannerData(), getCategoryTopData()])
-  isFinish.value = true
+  isLoading.value = false
 })
 </script>
 
 <template>
-  <view class="viewport">
-    <PageSkeleton v-if="!isFinish" />
+  <PageSkeleton v-if="isLoading" />
+  <view class="viewport" v-else>
     <!-- 搜索框 -->
     <view class="search">
       <view class="input">
