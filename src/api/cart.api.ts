@@ -14,7 +14,7 @@ export const postMemberCartAPI = (data: CartParams) => {
  */
 export const getMemberCartAPI = () => {
   return http<CartItem[]>({
-    method: 'GET',
+    method: 'POST',
     url: '/cart/list'
   })
 }
