@@ -1,7 +1,6 @@
 <script setup lang="ts">
+// 导⼊列表组件
 import OrderList from './components/OrderList.vue'
-// 获取屏幕边界到安全区域距离
-const { safeAreaInsets } = uni.getSystemInfoSync()
 // tabs 数据
 const orderTabs = ref([
   { orderState: 0, title: '全部' },
@@ -10,11 +9,12 @@ const orderTabs = ref([
   { orderState: 3, title: '待收货' },
   { orderState: 4, title: '待评价' }
 ])
-
+// 获取⻚⾯参数
 const query = defineProps<{
   type: string
 }>()
-const activeIndex = ref(orderTabs.value.findIndex((item) => item.orderState === Number(query.type)))
+// ⾼亮下标
+const activeIndex = ref(orderTabs.value.findIndex((v) => v.orderState === Number(query.type)))
 </script>
 <template>
   <view class="viewport">
@@ -27,10 +27,11 @@ const activeIndex = ref(orderTabs.value.findIndex((item) => item.orderState === 
       <view class="cursor" :style="{ left: activeIndex * 20 + '%' }"></view>
     </view>
     <!-- 滑动容器 -->
-    <swiper class="swiper" ::current="activeIndex" @change="activeIndex = $event.detial.current">
+    <swiper class="swiper" :current="activeIndex" @change="activeIndex = $event.detail.current">
       <!-- 滑动项 -->
-      <swiper-item v-for="item in orderTabs" :key="item">
-        <OrderList :order-state="item.orderState"></OrderList>
+      <swiper-item v-for="item in orderTabs" :key="item.title">
+        <!-- 订单列表 -->
+        <OrderList :order-state="item.orderState" />
       </swiper-item>
     </swiper>
   </view>
@@ -42,7 +43,7 @@ page {
 }
 .viewport {
   height: 100%;
-  display: fLex;
+  display: flex;
   flex-direction: column;
   background-color: #fff;
 }
@@ -70,14 +71,16 @@ page {
     width: 20%;
     height: 6rpx;
     padding: 0 50rpx;
-    background-color: #27ba9b; /*过渡效果*/
-    transition: all 0.4s; // swiper
+    background-color: #27ba9b;
+    /* 过渡效果 */
+    transition: all 0.4s;
   }
 }
+// swiper
 .swiper {
   background-color: #f7f7f8;
 }
-//订单列表
+// 订单列表
 .orders {
   .card {
     min-height: 100rpx;
@@ -92,7 +95,7 @@ page {
   .status {
     display: flex;
     align-items: center;
-    justify-content: space between;
+    justify-content: space-between;
     font-size: 28rpx;
     color: #999;
     margin-bottom: 15rpx;
@@ -103,7 +106,7 @@ page {
     .primary {
       color: #ff9240;
     }
-    .ican-delete {
+    .icon-delete {
       line-height: 1;
       margin-left: 10rpx;
       padding-left: 10rpx;
@@ -117,9 +120,6 @@ page {
       width: 170rpx;
       height: 170rpx;
       margin-right: 20rpx;
-      border-radius: 10rpx;
-      overflow: hidden;
-      position: relative;
     }
   }
 }

@@ -7,85 +7,108 @@ const props = defineProps<{
   orderState: number
 }>()
 // 请求参数
-const queryParams: OrderListParams = {
+const queryParams: Required<OrderListParams> = {
   page: 1,
   pageSize: 5,
   orderType: props.orderState
 }
 // 获取订单列表
 const orderList = ref<OrderItem[]>([])
+// 是否加载中标记，⽤于防⽌滚动触底触发多次请求
 const isLoading = ref(false)
 const getMemberOrderData = async () => {
-  console.log('isFinish' + isFinish.value)
-  console.log('isLoading' + isLoading.value)
+  // 如果数据出于加载中，退出函数
   if (isLoading.value) return
-  if (isFinish.value) {
-    return uni.showToast({ icon: 'none', title: '没有更多数据了' })
+  // 退出分⻚判断
+  if (isFinish.value === true) {
+    return uni.showToast({ icon: 'none', title: '没有更多数据~' })
   }
+  // 发送请求前，标记为加载中
   isLoading.value = true
+  // 发送请求
   const res = await getMemberOrderAPI(queryParams)
+  // 发送请求后，重置标记
   isLoading.value = false
+  // 数组追加
   orderList.value.push(...res.result.list)
+  // 分⻚条件
   if (queryParams.page < res.result.pages) {
+    // ⻚码累加
     queryParams.page++
   } else {
+    // 分⻚已结束
     isFinish.value = true
   }
 }
 onMounted(() => {
   getMemberOrderData()
 })
-
+// 订单⽀付
 const onOrderPay = async (id: string) => {
   if (import.meta.env.DEV) {
+    // 开发环境模拟⽀付
     await getPayMockAPI(parseInt(id))
   } else {
+    // #ifdef MP-WEIXIN
+    // 正式环境微信⽀付
     const res = await getPayWxPayMiniPayAPI({ orderId: id })
     await wx.requestPayment(res.result)
+    // #endif
+    // #ifdef H5 || APP-PLUS
+    // H5端 和 App 端未开通⽀付-模拟⽀付体验
+    await getPayMockAPI(parseInt(id))
+    // #endif
   }
-  uni.showToast({ title: '支付成功' })
-  const order = orderList.value.find((item) => item.id === id)
+  // 成功提示
+  uni.showToast({ title: '⽀付成功' })
+  // 更新订单状态
+  const order = orderList.value.find((v) => v.id === id)
   order!.orderState = OrderState.DaiFaHuo
 }
-
 // 确认收货
 const onOrderConfirm = (id: string) => {
-  // 二次确认弹窗
   uni.showModal({
-    content: '为保障您的权益，请收到货并确认无误后，再确认收货',
-    success: async (success) => {
-      if (success.confirm) {
-        const res = await putMemberOrderReceiptByIdAPI(id)
-        // 更新订单状态
-        const order = orderList.value.find((item) => item.id === id)
-        order!.orderState = res.result.orderState
+    content: '为保障您的权益，请收到货并确认⽆误后，再确认收货',
+    confirmColor: '#27BA9B',
+    success: async (res) => {
+      if (res.confirm) {
+        await putMemberOrderReceiptByIdAPI(id)
+        uni.showToast({ icon: 'success', title: '确认收货成功' })
+        // 确认成功，更新为待评价
+        const order = orderList.value.find((v) => v.id === id)
+        order!.orderState = OrderState.DaiPingJia
       }
     }
   })
 }
 // 删除订单
 const onOrderDelete = (id: string) => {
-  // 二次确认
   uni.showModal({
-    content: '是否删除订单',
+    content: '你确定要删除该订单？',
     confirmColor: '#27BA9B',
-    success: async (success) => {
-      if (success.confirm) {
+    success: async (res) => {
+      if (res.confirm) {
         await deleteMemberOrderAPI([id])
-        const index = orderList.value.findIndex((item) => item.id === id)
+        // 删除成功，界⾯中删除订单
+        const index = orderList.value.findIndex((v) => v.id === id)
         orderList.value.splice(index, 1)
       }
     }
   })
 }
+// 是否分⻚结束
 const isFinish = ref(false)
-// 下拉刷新状态
+// 是否触发下拉刷新
 const isTriggered = ref(false)
-// 自定义下拉刷新被触发
+// ⾃定义下拉刷新被触发
 const onRefresherrefresh = async () => {
-  isFinish.value = false
-  // 开启动画
+  // 开始动画
   isTriggered.value = true
+  // 重置数据
+  queryParams.page = 1
+  orderList.value = []
+  isFinish.value = false
+  // 加载数据
   await getMemberOrderData()
   // 关闭动画
   isTriggered.value = false
@@ -93,9 +116,9 @@ const onRefresherrefresh = async () => {
 </script>
 <template>
   <scroll-view
+    enable-back-to-top
     scroll-y
     class="orders"
-    enable-back-to-top
     refresher-enabled
     :refresher-triggered="isTriggered"
     @refresherrefresh="onRefresherrefresh"
@@ -105,12 +128,12 @@ const onRefresherrefresh = async () => {
       <!-- 订单信息 -->
       <view class="status">
         <text class="date">{{ order.createTime }}</text>
-        <!-- 订单状态文字 -->
+        <!-- 订单状态⽂字 -->
         <text>{{ orderStateList[order.orderState].text }}</text>
         <!-- 待评价/已完成/已取消 状态: 展示删除订单 -->
         <text
           v-if="order.orderState >= OrderState.DaiPingJia"
-          class="icon-delete"
+          class="ico n-delete"
           @tap="onOrderDelete(order.id)"
         ></text>
       </view>
@@ -145,16 +168,13 @@ const onRefresherrefresh = async () => {
         <template v-else>
           <navigator
             class="button secondary"
-            :url="`/pagesOrder/create/create?orderId=${order.id}`"
+            :url="`/pagesOrder/create/create?orderId=id`"
             hover-class="none"
           >
             再次购买
           </navigator>
           <!-- 待收货状态: 展示确认收货 -->
-          <view
-            v-if="order.orderState === OrderState.DaiShouHuo"
-            class="button primary"
-            @tap="onOrderConfirm(order.id)"
+          <view v-if="order.orderState === OrderState.DaiShouHuo" class="button primary" @tap="onOrderConfirm"
             >确认收货</view
           >
         </template>
@@ -162,12 +182,12 @@ const onRefresherrefresh = async () => {
     </view>
     <!-- 底部提示⽂字 -->
     <view class="loading-text" :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }">
-      {{ isFinish ? '没有更多数据~' : '正在加载...' }}
+      {{ true ? '没有更多数据~' : '正在加载...' }}
     </view>
   </scroll-view>
 </template>
-<style lang="scss" scoped>
-//订单列表
+<style lang="scss">
+// 订单列表
 .orders {
   .card {
     min-height: 100rpx;
@@ -182,7 +202,7 @@ const onRefresherrefresh = async () => {
   .status {
     display: flex;
     align-items: center;
-    justify-content: space between;
+    justify-content: space-between;
     font-size: 28rpx;
     color: #999;
     margin-bottom: 15rpx;
@@ -210,50 +230,48 @@ const onRefresherrefresh = async () => {
       border-radius: 10rpx;
       overflow: hidden;
       position: relative;
+      .image {
+        width: 170rpx;
+        height: 170rpx;
+      }
     }
-  }
-
-  .quantity {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    line-height: 1;
-    padding: 6rpx 4rpx 6rpx 8rpx;
-    font-size: 24rpx;
-    color: #fff;
-    border-radius: 10rpx 0 0 0;
-    background-color: rgba(0, 0, 0, 0.6);
-  }
-
-  .meta {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .name {
-    height: 80rpx;
-    font-size: 26rpx;
-    color: #444;
-  }
-  .type {
-    line-height: 1.8;
-    padding: 0 15rpx;
-    margin-top: 10rpx;
-    font-size: 24rpx;
-    align-self: flex-start;
-    border-radius: 4rpx;
-    color: #888;
-    background-color: #f7f7f8;
-  }
-
-  .more {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22rpx;
-    color: #333;
+    .quantity {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      line-height: 1;
+      padding: 6rpx 4rpx 6rpx 8rpx;
+      font-size: 24rpx;
+      color: #fff;
+      border-radius: 10rpx 0 0 0;
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+    .meta {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .name {
+      height: 80rpx;
+      font-size: 26rpx;
+      color: #444;
+    }
+    .type {
+      line-height: 1.8;
+      padding: 0 15rpx;
+      margin-top: 10rpx;
+      font-size: 24rpx;
+      align-self: flex-start;
+      border-radius: 4rpx;
+      color: #888;
+      background-color: #f7f7f8;
+    }
+    .more {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
   }
 }
 </style>
