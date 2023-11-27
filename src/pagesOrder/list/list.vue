@@ -80,47 +80,4 @@ page {
 .swiper {
   background-color: #f7f7f8;
 }
-// 订单列表
-.orders {
-  .card {
-    min-height: 100rpx;
-    padding: 20rpx;
-    margin: 20rpx 20rpx 0;
-    border-radius: 10rpx;
-    background-color: #fff;
-    &:last-child {
-      padding-bottom: 40rpx;
-    }
-  }
-  .status {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 28rpx;
-    color: #999;
-    margin-bottom: 15rpx;
-    .date {
-      color: #666;
-      flex: 1;
-    }
-    .primary {
-      color: #ff9240;
-    }
-    .icon-delete {
-      line-height: 1;
-      margin-left: 10rpx;
-      padding-left: 10rpx;
-      border-left: 1rpx solid #e3e3e3;
-    }
-  }
-  .goods {
-    display: flex;
-    margin-bottom: 20rpx;
-    .cover {
-      width: 170rpx;
-      height: 170rpx;
-      margin-right: 20rpx;
-    }
-  }
-}
 </style>

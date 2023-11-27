@@ -284,40 +284,50 @@ const onRefresherrefresh = async () => {
       flex: 1;
       display: flex;
       align-items: center;
+      justify-content: center;
+      font-size: 22rpx;
+      color: #333;
     }
   }
 
   .payment {
-    font-size: 26rpx;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    line-height: 1;
+    padding: 20rpx 0;
+    text-align: right;
     color: #999;
-    margin-bottom: 20rpx;
+    font-size: 28rpx;
+    border-bottom: 1rpx solid #eee;
 
     .quantity {
-      margin-right: 10rpx;
-      font-size: 26rpx;
+      font-size: 24rpx;
+      margin-right: 16rpx;
     }
 
     .amount {
       color: #444;
-      font-size: 28rpx;
-      margin-left: 5rpx;
+      margin-left: 6rpx;
+    }
+
+    .symbol {
+      font-size: 20rpx;
     }
   }
 
   .action {
     display: flex;
-    flex-direction: row-reverse;
-    justify-content: flex-start;
-    padding: 20rpx 0 0;
-    border-top: 1rpx solid #e3e3e3;
-    // background-color: yellow;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: 20rpx;
 
     .button {
-      width: 200rpx;
+      width: 180rpx;
       height: 60rpx;
-      text-align: center;
+      display: flex;
       justify-content: center;
-      line-height: 60rpx;
+      align-items: center;
       margin-left: 20rpx;
       border-radius: 60rpx;
       border: 1rpx solid #ccc;
@@ -331,7 +341,14 @@ const onRefresherrefresh = async () => {
     .primary {
       color: #fff;
       background-color: #27ba9b;
+      border-color: #27ba9b;
     }
+  }
+  .loading-text {
+    text-align: center;
+    font-size: 28rpx;
+    color: #666;
+    padding: 20rpx 0;
   }
 }
 </style>
