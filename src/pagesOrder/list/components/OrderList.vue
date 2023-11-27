@@ -1,21 +1,26 @@
 <script setup lang="ts">
 import { OrderState, orderStateList } from '@/config/constants'
+
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
+
 // 定义 porps
 const props = defineProps<{
   orderState: number
 }>()
+
 // 请求参数
 const queryParams: Required<OrderListParams> = {
   page: 1,
   pageSize: 5,
   orderType: props.orderState
 }
-// 获取订单列表
-const orderList = ref<OrderItem[]>([])
+
 // 是否加载中标记，⽤于防⽌滚动触底触发多次请求
 const isLoading = ref(false)
+
+// 获取订单列表
+const orderList = ref<OrderItem[]>([])
 const getMemberOrderData = async () => {
   // 如果数据出于加载中，退出函数
   if (isLoading.value) return
@@ -43,6 +48,7 @@ const getMemberOrderData = async () => {
 onMounted(() => {
   getMemberOrderData()
 })
+
 // 订单⽀付
 const onOrderPay = async (id: string) => {
   if (import.meta.env.DEV) {
@@ -65,10 +71,11 @@ const onOrderPay = async (id: string) => {
   const order = orderList.value.find((v) => v.id === id)
   order!.orderState = OrderState.DaiFaHuo
 }
+
 // 确认收货
 const onOrderConfirm = (id: string) => {
   uni.showModal({
-    content: '为保障您的权益，请收到货并确认⽆误后，再确认收货',
+    content: '为保障您的权益，请收到货并确认无误后，再确认收货',
     confirmColor: '#27BA9B',
     success: async (res) => {
       if (res.confirm) {
@@ -81,6 +88,7 @@ const onOrderConfirm = (id: string) => {
     }
   })
 }
+
 // 删除订单
 const onOrderDelete = (id: string) => {
   uni.showModal({
@@ -96,6 +104,7 @@ const onOrderDelete = (id: string) => {
     }
   })
 }
+
 // 是否分⻚结束
 const isFinish = ref(false)
 // 是否触发下拉刷新
@@ -133,7 +142,7 @@ const onRefresherrefresh = async () => {
         <!-- 待评价/已完成/已取消 状态: 展示删除订单 -->
         <text
           v-if="order.orderState >= OrderState.DaiPingJia"
-          class="ico n-delete"
+          class="icon-delete"
           @tap="onOrderDelete(order.id)"
         ></text>
       </view>
@@ -146,7 +155,7 @@ const onRefresherrefresh = async () => {
         hover-class="none"
       >
         <view class="cover">
-          <image class="image" mode="aspectFit" :src="item.cover"></image>
+          <image class="image" mode="aspectFit" :src="item.cover" />
         </view>
         <view class="meta">
           <view class="name ellipsis">{{ item.name }}</view>
@@ -157,7 +166,7 @@ const onRefresherrefresh = async () => {
       <view class="payment">
         <text class="quantity">共{{ order.totalNum }}件商品</text>
         <text>实付</text>
-        <text class="amount"> <text class="symbol">¥</text>{{ order.payMoney }}</text>
+        <text class="amount"><text class="symbol">¥</text>{{ order.payMoney }}</text>
       </view>
       <!-- 订单操作按钮 -->
       <view class="action">
@@ -168,21 +177,25 @@ const onRefresherrefresh = async () => {
         <template v-else>
           <navigator
             class="button secondary"
-            :url="`/pagesOrder/create/create?orderId=id`"
+            :url="`/pagesOrder/create/create?orderId=${order.id}`"
             hover-class="none"
           >
             再次购买
           </navigator>
           <!-- 待收货状态: 展示确认收货 -->
-          <view v-if="order.orderState === OrderState.DaiShouHuo" class="button primary" @tap="onOrderConfirm"
-            >确认收货</view
+          <view
+            v-if="order.orderState === OrderState.DaiShouHuo"
+            class="button primary"
+            @tap="onOrderConfirm(order.id)"
           >
+            确认收货
+          </view>
         </template>
       </view>
     </view>
     <!-- 底部提示⽂字 -->
     <view class="loading-text" :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }">
-      {{ true ? '没有更多数据~' : '正在加载...' }}
+      {{ isFinish ? '没有更多数据~' : '正在加载...' }}
     </view>
   </scroll-view>
 </template>
@@ -271,6 +284,53 @@ const onRefresherrefresh = async () => {
       flex: 1;
       display: flex;
       align-items: center;
+    }
+  }
+
+  .payment {
+    font-size: 26rpx;
+    color: #999;
+    margin-bottom: 20rpx;
+
+    .quantity {
+      margin-right: 10rpx;
+      font-size: 26rpx;
+    }
+
+    .amount {
+      color: #444;
+      font-size: 28rpx;
+      margin-left: 5rpx;
+    }
+  }
+
+  .action {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+    padding: 20rpx 0 0;
+    border-top: 1rpx solid #e3e3e3;
+    // background-color: yellow;
+
+    .button {
+      width: 200rpx;
+      height: 60rpx;
+      text-align: center;
+      justify-content: center;
+      line-height: 60rpx;
+      margin-left: 20rpx;
+      border-radius: 60rpx;
+      border: 1rpx solid #ccc;
+      font-size: 26rpx;
+      color: #444;
+    }
+    .secondary {
+      color: #27ba9b;
+      border-color: #27ba9b;
+    }
+    .primary {
+      color: #fff;
+      background-color: #27ba9b;
     }
   }
 }
